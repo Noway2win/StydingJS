@@ -288,8 +288,15 @@ window.addEventListener('DOMContentLoaded', function () {
 
 //переменные
 const slider = document.querySelector('.offer__slider'),
-    sliderImgArr = [];
-let count;
+    wrapperWidth = window.getComputedStyle(slider.querySelector('.offer__slider-wrapper')).width,
+    inner = slider.querySelector('.offer__slider-inner'),
+    nextBtn = slider.querySelector('.offer__slider-next'),
+    currentInd = slider.querySelector('#current'),
+    totalInd = slider.querySelector('#total'),
+    prevBtn = slider.querySelector('.offer__slider-prev');
+let count = 1,
+    offset = 0;
+
 // Получение картинок с сервера
 async function getData(url) {
     const data = await fetch(url);
@@ -307,44 +314,61 @@ then(data => {
         src,
         alt
     }) => {
-        sliderImgArr.push(new SliderImage(src, alt, slider));
+        new SliderImage(src, alt, inner).insertImage();
     });
-}).then(() => {
-    count = showSlider(slider, 0, sliderImgArr.length, sliderImgArr[0]);
-    // Слушатель события нажатия кнопки
-    // Вправо
-    slider.querySelector(".offer__slider-next").addEventListener('click', () => changeSlide(sliderImgArr, "right"));
-    // Влево
-    slider.querySelector(".offer__slider-prev").addEventListener('click', () => changeSlide(sliderImgArr, "left"));
+}).
+then(() => {
+    const images = slider.querySelectorAll('.offer__slide');
+    inner.style.cssText = `width:${100 * images.length}%; display: flex; transition: 0.5s all;`;
+    images.forEach(image => image.style.width = wrapperWidth);
+
+
+    nextBtn.addEventListener('click', () => {
+        if (offset == +wrapperWidth.slice(0, wrapperWidth.length - 2) * (images.length - 1)) {
+            offset = 0;
+        } else {
+            offset += +wrapperWidth.slice(0, wrapperWidth.length - 2);
+        }
+        inner.style.transform = `translateX(-${offset}px)`;
+        changeSlideIndex("next", images);
+        showSlideInd(images);
+    });
+
+
+    prevBtn.addEventListener('click', () => {
+        if (offset == 0) {
+            offset = +wrapperWidth.slice(0, wrapperWidth.length - 2) * (images.length - 1);
+        } else {
+            offset -= +wrapperWidth.slice(0, wrapperWidth.length - 2);
+        }
+        inner.style.transform = `translateX(-${offset}px)`;
+        changeSlideIndex("prev", images);
+        showSlideInd(images);
+    });
 });
-
-// Функция показа слайда
-function showSlider(div, curIndex, total, image) {
-    if (curIndex < 10 || total < 10) {
-        div.querySelector("#current").innerText = `0${curIndex+1}`;
-        div.querySelector("#total").innerText = `0${total}`;
+// Функция изменения индекса слайда
+function changeSlideIndex(dir, arr) {
+    if (dir == 'next') {
+        ++count;
     } else {
-        div.querySelector("#current").innerText = `${curIndex+1}`;
-        div.querySelector("#total").innerText = `${total}`;
+        --count;
     }
-    image.showImage();
-    return curIndex;
+    if (count > arr.length) {
+        count = 1;
+    } else if (count < 1) {
+        count = arr.length;
+    }
 }
-
-// Функция переключения слайда
-function changeSlide(arr, dir) {
-    if (dir == "right") {
-        count++;
-        if (count >= arr.length) {
-            count = 0;
-        }
+// Функция отображения нового индекса
+function showSlideInd(arr) {
+    if (arr.length < 10) {
+        totalInd.textContent = `0${arr.length}`;
+        currentInd.textContent = `0${count}`;
     } else {
-        count--;
-        if (count < 0) {
-            count = arr.length - 1;
-        }
+        totalInd.textContent = arr.length;
+        currentInd.textContent = count;
     }
-    showSlider(slider, count, arr.length, arr[count]);
+
 }
 // Класс картинки на слайдере
 class SliderImage {
@@ -353,12 +377,9 @@ class SliderImage {
         this.alt = alt;
         this.parent = parent;
     }
-    showImage() {
-        const sliderImage = this.parent.querySelector('.offer__slide > img');
-        sliderImage.src = this.src;
-        sliderImage.alt = this.alt;
+    insertImage() {
+        this.parent.insertAdjacentHTML("beforeend", `<div class="offer__slide">
+        <img src=${this.src} alt=${this.alt} />
+      </div>`);
     }
 }
-
-// const slide1 = new SliderImage("img/slider/paprika.jpg", 'paprika', slider);
-// slide1.showSlider();
