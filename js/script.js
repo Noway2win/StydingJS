@@ -306,7 +306,7 @@ async function getData(url) {
     return await data.json();
 }
 
-// Создание обьектов на основе данных с сервера и их запись в массив
+// Создание обьектов на основе данных с сервера и их обработка
 let imgData = getData("http://localhost:3000/slidersrc").
 then(data => {
     console.log(data);
