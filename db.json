@@ -3,9 +3,9 @@
     {
       "img": "img/tabs/vegy.jpg",
       "altimg": "vegy",
-      "title": "Меню 'Фитнес'",
+      "title": "Меню 'Фитнес!!",
       "descr": "Меню 'Фитнес' - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!",
-      "price": 9
+      "price": 10
     },
     {
       "img": "img/tabs/post.jpg",
@@ -22,7 +22,29 @@
       "price": 21
     }
   ],
+  "slidersrc": [
+    {
+      "src": "img/slider/paprika.jpg",
+      "alt": "paprika"
+    },
+    {
+      "src": "img/slider/food-12.jpg",
+      "alt": "vegetables"
+    },
+    {
+      "src": "img/slider/olive-oil.jpg",
+      "alt": "oliveOil"
+    },
+    {
+      "src": "img/slider/pepper.jpg",
+      "alt": "pepper"
+    }
+  ],
   "requests": [
-      
+    {
+      "name": "Dima Sat",
+      "phone": "564-90-53",
+      "id": 1
+    }
   ]
 }
