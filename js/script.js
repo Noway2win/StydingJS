@@ -517,14 +517,14 @@ window.addEventListener('DOMContentLoaded', function () {
         } else {
             gender = 'female';
             localStorage.setItem('gender', 'female');
-        };
+        }
         if (localStorage.getItem('rat')) {
             rat = localStorage.getItem('rat');
         } else {
             rat = 1.375;
             localStorage.setItem('rat', 1.375);
         }
-        initLocalActive(genderSelector, activeClass)
+        initLocalActive(genderSelector, activeClass);
         initLocalActive(ratSelector, activeClass);
     }
     // Функция установки первоначальных клссов активности
