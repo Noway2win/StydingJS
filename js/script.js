@@ -282,147 +282,262 @@ window.addEventListener('DOMContentLoaded', function () {
             closeModal();
         }, 4000);
     }
-});
 
-// Создание слайдера
 
-//переменные
-const slider = document.querySelector('.offer__slider'),
-    wrapperWidth = window.getComputedStyle(slider.querySelector('.offer__slider-wrapper')).width,
-    wrapper = slider.querySelector('.offer__slider-wrapper'),
-    inner = slider.querySelector('.offer__slider-inner'),
-    nextBtn = slider.querySelector('.offer__slider-next'),
-    currentInd = slider.querySelector('#current'),
-    totalInd = slider.querySelector('#total'),
-    prevBtn = slider.querySelector('.offer__slider-prev');
-let count = 1,
-    offset = 0;
+    // Создание слайдера
 
-// Получение картинок с сервера
-async function getData(url) {
-    const data = await fetch(url);
-    if (!data.ok) {
-        throw new Error(`Can not get data from${url}, message status ${data.status}`);
-    }
-    return await data.json();
-}
+    //переменные
+    const slider = document.querySelector('.offer__slider'),
+        wrapperWidth = window.getComputedStyle(slider.querySelector('.offer__slider-wrapper')).width,
+        wrapper = slider.querySelector('.offer__slider-wrapper'),
+        inner = slider.querySelector('.offer__slider-inner'),
+        nextBtn = slider.querySelector('.offer__slider-next'),
+        currentInd = slider.querySelector('#current'),
+        totalInd = slider.querySelector('#total'),
+        prevBtn = slider.querySelector('.offer__slider-prev');
+    let count = 1,
+        offset = 0;
 
-// Создание обьектов на основе данных с сервера и их обработка
-let imgData = getData("http://localhost:3000/slidersrc").
-then(data => {
-    console.log(data);
-    data.forEach(({
-        src,
-        alt
-    }) => {
-        new SliderImage(src, alt, inner).insertImage();
-    });
-}).
-then(() => {
-    const images = slider.querySelectorAll('.offer__slide'),
-        dots = [];
-    inner.style.cssText = `width:${100 * images.length}%; display: flex; transition: 0.5s all;`;
-    images.forEach(image => image.style.width = wrapperWidth);
-    const sliderDots = document.createElement('ol');
-    sliderDots.classList.add('carousel-indicators');
-    wrapper.append(sliderDots);
-    placeDots(images, sliderDots, dots);
-    dotChange(images, dots, 'data-order');
-    nextBtn.addEventListener('click', () => {
-        if (offset == stringToNumber(wrapperWidth) * (images.length - 1)) {
-            offset = 0;
-        } else {
-            offset += stringToNumber(wrapperWidth);
+    // Получение картинок с сервера
+    async function getData(url) {
+        const data = await fetch(url);
+        if (!data.ok) {
+            throw new Error(`Can not get data from${url}, message status ${data.status}`);
         }
-        inner.style.transform = `translateX(-${offset}px)`;
-        changeSlideIndex("next", images, dots, "data-order");
-        showSlideInd(images, dots);
-    });
-
-
-    prevBtn.addEventListener('click', () => {
-        if (offset == 0) {
-            offset = stringToNumber(wrapperWidth) * (images.length - 1);
-        } else {
-            offset -= stringToNumber(wrapperWidth);
-        }
-        inner.style.transform = `translateX(-${offset}px)`;
-        changeSlideIndex("prev", images, dots, 'data-order');
-        showSlideInd(images, dots);
-    });
-});
-// Функция изменения индекса слайда
-function changeSlideIndex(dir, arr) {
-    if (dir == 'next') {
-        ++count;
-    } else if (dir == 'prev') {
-        --count;
+        return await data.json();
     }
-    if (count > arr.length) {
-        count = 1;
-    } else if (count < 1) {
-        count = arr.length;
-    }
-}
-// Функция изменения индекса слайда по точкам
-function dotChange(arr, dotArr, atribute) {
-    dotArr.forEach(a => {
-        a.addEventListener('click', (e) => {
-            const targetInd = e.target.getAttribute(atribute);
-            count = targetInd;
-            offset = stringToNumber(wrapperWidth) * (targetInd - 1);
+
+    // Создание обьектов на основе данных с сервера и их обработка
+    let imgData = getData("http://localhost:3000/slidersrc").
+    then(data => {
+        console.log(data);
+        data.forEach(({
+            src,
+            alt
+        }) => {
+            new SliderImage(src, alt, inner).insertImage();
+        });
+    }).
+    then(() => {
+        const images = slider.querySelectorAll('.offer__slide'),
+            dots = [];
+        inner.style.cssText = `width:${100 * images.length}%; display: flex; transition: 0.5s all;`;
+        images.forEach(image => image.style.width = wrapperWidth);
+        const sliderDots = document.createElement('ol');
+        sliderDots.classList.add('carousel-indicators');
+        wrapper.append(sliderDots);
+        placeDots(images, sliderDots, dots);
+        dotChange(images, dots, 'data-order');
+        nextBtn.addEventListener('click', () => {
+            if (offset == stringToNumber(wrapperWidth) * (images.length - 1)) {
+                offset = 0;
+            } else {
+                offset += stringToNumber(wrapperWidth);
+            }
             inner.style.transform = `translateX(-${offset}px)`;
-            dotArr.forEach(dot => {
-                dot.style.opacity = '.5';
-            });
-            dotArr[count - 1].style.opacity = 1;
-            showSlideInd(arr, dotArr);
+            changeSlideIndex("next", images, dots, "data-order");
+            showSlideInd(images, dots);
+        });
+
+
+        prevBtn.addEventListener('click', () => {
+            if (offset == 0) {
+                offset = stringToNumber(wrapperWidth) * (images.length - 1);
+            } else {
+                offset -= stringToNumber(wrapperWidth);
+            }
+            inner.style.transform = `translateX(-${offset}px)`;
+            changeSlideIndex("prev", images, dots, 'data-order');
+            showSlideInd(images, dots);
         });
     });
-}
-// Функция отображения нового индекса
-function showSlideInd(arr, dotArr) {
-    if (arr.length < 10) {
-        totalInd.textContent = `0${arr.length}`;
-        currentInd.textContent = `0${count}`;
-    } else {
-        totalInd.textContent = arr.length;
-        currentInd.textContent = count;
-    }
-    dotArr.forEach(dot => {
-        dot.style.opacity = '.5';
-    });
-    dotArr[count - 1].style.opacity = 1;
-
-}
-//Функция отрисовывания точек
-function placeDots(arr, parent, pushArr) {
-    for (let i = 0; i < arr.length; i++) {
-        const dot = document.createElement('li');
-        dot.setAttribute('data-order', i + 1);
-        dot.classList.add('dot');
-        if (i == 0) {
-            dot.style.opacity = 1;
+    // Функция изменения индекса слайда
+    function changeSlideIndex(dir, arr) {
+        if (dir == 'next') {
+            ++count;
+        } else if (dir == 'prev') {
+            --count;
         }
-        parent.append(dot);
-        pushArr.push(dot);
+        if (count > arr.length) {
+            count = 1;
+        } else if (count < 1) {
+            count = arr.length;
+        }
     }
-}
-// Функция получения числа из строки
-function stringToNumber(str) {
-    let num = +str.replace(/\D/g, '');
-    return num;
-}
-// Класс картинки на слайдере
-class SliderImage {
-    constructor(src, alt, parent) {
-        this.src = src;
-        this.alt = alt;
-        this.parent = parent;
+    // Функция изменения индекса слайда по точкам
+    function dotChange(arr, dotArr, atribute) {
+        dotArr.forEach(a => {
+            a.addEventListener('click', (e) => {
+                const targetInd = e.target.getAttribute(atribute);
+                count = targetInd;
+                offset = stringToNumber(wrapperWidth) * (targetInd - 1);
+                inner.style.transform = `translateX(-${offset}px)`;
+                dotArr.forEach(dot => {
+                    dot.style.opacity = '.5';
+                });
+                dotArr[count - 1].style.opacity = 1;
+                showSlideInd(arr, dotArr);
+            });
+        });
     }
-    insertImage() {
-        this.parent.insertAdjacentHTML("beforeend", `<div class="offer__slide">
+    // Функция отображения нового индекса
+    function showSlideInd(arr, dotArr) {
+        if (arr.length < 10) {
+            totalInd.textContent = `0${arr.length}`;
+            currentInd.textContent = `0${count}`;
+        } else {
+            totalInd.textContent = arr.length;
+            currentInd.textContent = count;
+        }
+        dotArr.forEach(dot => {
+            dot.style.opacity = '.5';
+        });
+        dotArr[count - 1].style.opacity = 1;
+
+    }
+    //Функция отрисовывания точек
+    function placeDots(arr, parent, pushArr) {
+        for (let i = 0; i < arr.length; i++) {
+            const dot = document.createElement('li');
+            dot.setAttribute('data-order', i + 1);
+            dot.classList.add('dot');
+            if (i == 0) {
+                dot.style.opacity = 1;
+            }
+            parent.append(dot);
+            pushArr.push(dot);
+        }
+    }
+    // Функция получения числа из строки
+    function stringToNumber(str) {
+        let num = +str.replace(/\D/g, '');
+        return num;
+    }
+    // Класс картинки на слайдере
+    class SliderImage {
+        constructor(src, alt, parent) {
+            this.src = src;
+            this.alt = alt;
+            this.parent = parent;
+        }
+        insertImage() {
+            this.parent.insertAdjacentHTML("beforeend", `<div class="offer__slide">
         <img src=${this.src} alt=${this.alt} />
       </div>`);
+        }
     }
-}
+
+
+
+
+    // Калькулятор активности
+
+    const calcul = document.querySelector('.calculating__field'),
+        resultCcal = calcul.querySelector('.calculating__result span');
+    let gender, height, weight, age, rat;
+
+
+
+    localStorageDefault('#gender div', '.calculating__choose_big div', 'calculating__choose-item_active');
+    totalCalc();
+
+    getDivInfo('#gender', 'calculating__choose-item_active');
+    getDivInfo('.calculating__choose_big', 'calculating__choose-item_active');
+    getInputInfo('#height');
+    getInputInfo('#weight');
+    getInputInfo('#age');
+    // Функция общего рассчета
+    function totalCalc() {
+        if (!gender || !height || !weight || !age || !rat) {
+            resultCcal.textContent = 'No data';
+            return;
+        }
+
+        if (gender === 'female') {
+            resultCcal.textContent = Math.round((447, 6 + (9.2 * weight) + (3.1 * height) - (4.3 * age)) * rat);
+        } else {
+            resultCcal.textContent = Math.round((88.36 + (13.4 * weight) + (4.8 * height) - (5.7 * age)) * rat);
+        }
+    }
+
+    // Функция получения данных из блоков
+    function getDivInfo(parent, activeClass) {
+        const elements = document.querySelectorAll(`${parent} div`);
+
+        elements.forEach(elem => {
+            elem.addEventListener('click', (e) => {
+                if (e.target.getAttribute('data-rat')) {
+                    rat = +e.target.getAttribute('data-rat');
+                    localStorage.setItem('rat', +e.target.getAttribute('data-rat'));
+                } else {
+                    gender = e.target.getAttribute('id');
+                    localStorage.setItem('gender', e.target.getAttribute('id'));
+                }
+
+                elements.forEach(elem => {
+                    elem.classList.remove(activeClass);
+                });
+                e.target.classList.add(activeClass);
+                totalCalc();
+            });
+        });
+    }
+
+    //Получение данных из инпута
+    function getInputInfo(selector) {
+        const input = document.querySelector(selector);
+
+        input.addEventListener('input', () => {
+
+            if (input.value.match(/\D/g)) {
+                input.style.border = '1px solid red';
+            } else {
+                input.style.border = 'none';
+            }
+
+            switch (input.getAttribute('id')) {
+                case 'height':
+                    height = +input.value;
+                    break;
+                case 'weight':
+                    weight = +input.value;
+                    break;
+                case 'age':
+                    age = +input.value;
+                    break;
+            }
+            totalCalc();
+        });
+    }
+
+    // Функция работы с локальным хранилищем при входе
+    function localStorageDefault(genderSelector, ratSelector, activeClass) {
+        if (localStorage.getItem('gender')) {
+            gender = localStorage.getItem('gender');
+        } else {
+            gender = 'female';
+            localStorage.setItem('gender', 'female');
+        };
+        if (localStorage.getItem('rat')) {
+            rat = localStorage.getItem('rat');
+        } else {
+            rat = 1.375;
+            localStorage.setItem('rat', 1.375);
+        }
+        initLocalActive(genderSelector, activeClass)
+        initLocalActive(ratSelector, activeClass);
+    }
+    // Функция установки первоначальных клссов активности
+    function initLocalActive(selector, activeClass) {
+        const elements = document.querySelectorAll(selector);
+        elements.forEach(elem => {
+            elem.classList.remove(activeClass);
+            if (elem.getAttribute('id') === localStorage.getItem('gender')) {
+                elem.classList.add(activeClass);
+            }
+            if (elem.getAttribute('data-rat') === localStorage.getItem('rat')) {
+                elem.classList.add(activeClass);
+            }
+        });
+    }
+});
