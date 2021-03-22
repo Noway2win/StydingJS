@@ -329,10 +329,10 @@ then(() => {
     placeDots(images, sliderDots, dots);
     dotChange(images, dots, 'data-order');
     nextBtn.addEventListener('click', () => {
-        if (offset == +wrapperWidth.slice(0, wrapperWidth.length - 2) * (images.length - 1)) {
+        if (offset == +wrapperWidth.replace(/\D/g, '') * (images.length - 1)) {
             offset = 0;
         } else {
-            offset += +wrapperWidth.slice(0, wrapperWidth.length - 2);
+            offset += +wrapperWidth.replace(/\D/g, '');
         }
         inner.style.transform = `translateX(-${offset}px)`;
         changeSlideIndex("next", images, dots, "data-order");
@@ -342,9 +342,9 @@ then(() => {
 
     prevBtn.addEventListener('click', () => {
         if (offset == 0) {
-            offset = +wrapperWidth.slice(0, wrapperWidth.length - 2) * (images.length - 1);
+            offset = +wrapperWidth.replace(/\D/g, '') * (images.length - 1);
         } else {
-            offset -= +wrapperWidth.slice(0, wrapperWidth.length - 2);
+            offset -= +wrapperWidth.replace(/\D/g, '');
         }
         inner.style.transform = `translateX(-${offset}px)`;
         changeSlideIndex("prev", images, dots, 'data-order');
