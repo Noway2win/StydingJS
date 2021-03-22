@@ -329,10 +329,10 @@ then(() => {
     placeDots(images, sliderDots, dots);
     dotChange(images, dots, 'data-order');
     nextBtn.addEventListener('click', () => {
-        if (offset == +wrapperWidth.replace(/\D/g, '') * (images.length - 1)) {
+        if (offset == stringToNumber(wrapperWidth) * (images.length - 1)) {
             offset = 0;
         } else {
-            offset += +wrapperWidth.replace(/\D/g, '');
+            offset += stringToNumber(wrapperWidth);
         }
         inner.style.transform = `translateX(-${offset}px)`;
         changeSlideIndex("next", images, dots, "data-order");
@@ -342,9 +342,9 @@ then(() => {
 
     prevBtn.addEventListener('click', () => {
         if (offset == 0) {
-            offset = +wrapperWidth.replace(/\D/g, '') * (images.length - 1);
+            offset = stringToNumber(wrapperWidth) * (images.length - 1);
         } else {
-            offset -= +wrapperWidth.replace(/\D/g, '');
+            offset -= stringToNumber(wrapperWidth);
         }
         inner.style.transform = `translateX(-${offset}px)`;
         changeSlideIndex("prev", images, dots, 'data-order');
@@ -370,7 +370,7 @@ function dotChange(arr, dotArr, atribute) {
         a.addEventListener('click', (e) => {
             const targetInd = e.target.getAttribute(atribute);
             count = targetInd;
-            offset = +wrapperWidth.slice(0, wrapperWidth.length - 2) * (targetInd - 1);
+            offset = stringToNumber(wrapperWidth) * (targetInd - 1);
             inner.style.transform = `translateX(-${offset}px)`;
             dotArr.forEach(dot => {
                 dot.style.opacity = '.5';
@@ -407,6 +407,11 @@ function placeDots(arr, parent, pushArr) {
         parent.append(dot);
         pushArr.push(dot);
     }
+}
+// Функция получения числа из строки
+function stringToNumber(str) {
+    let num = +str.replace(/\D/g, '');
+    return num;
 }
 // Класс картинки на слайдере
 class SliderImage {
