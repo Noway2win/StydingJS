@@ -1,5 +1,5 @@
 function tabs(tabsSelector, tabsContentSelector, tabsParentSelector, activeClass) {
-    // Tabs
+    // Переключаемые табы
 
     let tabs = document.querySelectorAll(tabsSelector),
         tabsContent = document.querySelectorAll(tabsContentSelector),

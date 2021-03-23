@@ -7,7 +7,7 @@ import {
 } from '../services/services';
 
 function forms(formSelector, modalTimerId) {
-    // Forms
+    // Создание форм и обработка данных из них
 
     const forms = document.querySelectorAll(formSelector);
     const message = {

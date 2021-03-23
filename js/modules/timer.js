@@ -1,6 +1,7 @@
 function timer(id, deadline) {
-    // Timer
+    // Таймер, отсчитывающий время до какой-то даты
 
+    // Отсчет времени, которое осталось до истечения времени
     function getTimeRemaining(endtime) {
         const t = Date.parse(endtime) - Date.parse(new Date()),
             days = Math.floor((t / (1000 * 60 * 60 * 24))),
@@ -17,6 +18,7 @@ function timer(id, deadline) {
         };
     }
 
+    // Добавления нуля перед числом, если оно меньше 10
     function getZero(num) {
         if (num >= 0 && num < 10) {
             return '0' + num;
@@ -25,6 +27,7 @@ function timer(id, deadline) {
         }
     }
 
+    // Установка таймера
     function setClock(selector, endtime) {
 
         const timer = document.querySelector(selector),
@@ -35,7 +38,7 @@ function timer(id, deadline) {
             timeInterval = setInterval(updateClock, 1000);
 
         updateClock();
-
+        // Обновление таймера
         function updateClock() {
             const t = getTimeRemaining(endtime);
 

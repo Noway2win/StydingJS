@@ -1,3 +1,5 @@
+// Создание модальных окон для ввода данных(перезвона)
+
 function closeModal(modalSelector) {
     const modal = document.querySelector(modalSelector);
 

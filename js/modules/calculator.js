@@ -96,7 +96,7 @@ function calculator() {
         initLocalActive(genderSelector, activeClass);
         initLocalActive(ratSelector, activeClass);
     }
-    // Функция установки первоначальных клссов активности
+    // Функция установки первоначальных классов активности
     function initLocalActive(selector, activeClass) {
         const elements = document.querySelectorAll(selector);
         elements.forEach(elem => {
