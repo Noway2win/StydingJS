@@ -1,31 +1,35 @@
-   function slider() {
+   import {
+       getResource as getData
+   } from '../services/services';
+
+   function slider({
+       slides,
+       sliderParent,
+       sliderWrapper,
+       sliderInner,
+       sliderNext,
+       sliderPrev,
+       currentSlide,
+       totalSlides,
+       imgUrl,
+       dotsClass
+   }) {
        // Создание слайдера
 
        //переменные
-       const slider = document.querySelector('.offer__slider'),
-           wrapperWidth = window.getComputedStyle(slider.querySelector('.offer__slider-wrapper')).width,
-           wrapper = slider.querySelector('.offer__slider-wrapper'),
-           inner = slider.querySelector('.offer__slider-inner'),
-           nextBtn = slider.querySelector('.offer__slider-next'),
-           currentInd = slider.querySelector('#current'),
-           totalInd = slider.querySelector('#total'),
-           prevBtn = slider.querySelector('.offer__slider-prev');
+       const slider = document.querySelector(sliderParent),
+           wrapper = document.querySelector(sliderWrapper),
+           wrapperWidth = window.getComputedStyle(wrapper).width,
+           inner = document.querySelector(sliderInner),
+           nextBtn = document.querySelector(sliderNext),
+           prevBtn = document.querySelector(sliderPrev),
+           currentInd = document.querySelector(currentSlide),
+           totalInd = document.querySelector(totalSlides);
        let count = 1,
            offset = 0;
-
-       // Получение картинок с сервера
-       async function getData(url) {
-           const data = await fetch(url);
-           if (!data.ok) {
-               throw new Error(`Can not get data from${url}, message status ${data.status}`);
-           }
-           return await data.json();
-       }
-
-       // Создание обьектов на основе данных с сервера и их обработка
-       let imgData = getData("http://localhost:3000/slidersrc").
+       // Получение картинок с сервера и cоздание обьектов на основе данных с сервера и их обработка
+       getData(imgUrl).
        then(data => {
-           console.log(data);
            data.forEach(({
                src,
                alt
@@ -34,12 +38,12 @@
            });
        }).
        then(() => {
-           const images = slider.querySelectorAll('.offer__slide'),
+           const images = slider.querySelectorAll(slides),
                dots = [];
            inner.style.cssText = `width:${100 * images.length}%; display: flex; transition: 0.5s all;`;
            images.forEach(image => image.style.width = wrapperWidth);
            const sliderDots = document.createElement('ol');
-           sliderDots.classList.add('carousel-indicators');
+           sliderDots.classList.add(dotsClass);
            wrapper.append(sliderDots);
            placeDots(images, sliderDots, dots);
            dotChange(images, dots, 'data-order');
@@ -141,7 +145,6 @@
       </div>`);
            }
        }
-
    }
 
-   module.exports = slider;
+   export default slider;

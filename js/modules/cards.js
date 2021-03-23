@@ -1,3 +1,7 @@
+import {
+    getResource as get
+} from '../services/services';
+
 function cards() {
     // Использование классов для создание карточек меню
 
@@ -42,17 +46,9 @@ function cards() {
         }
     }
 
-    const getResource = async (url) => {
-        const res = await fetch(url);
 
-        if (!res.ok) {
-            throw new Error(`slomavsya ${url}, ${res.status}`);
-        }
 
-        return await res.json();
-    };
-
-    getResource('http://localhost:3000/menu').
+    get('http://localhost:3000/menu').
     then(data => {
         data.forEach(({
             img,
@@ -66,4 +62,4 @@ function cards() {
     });
 }
 
-module.exports = cards;
+export default cards;
